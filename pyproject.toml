@@ -1,0 +1,25 @@
+[project]
+name = "bosun"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Willem Meints", email = "1550763+wmeints@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "typer>=0.26.7",
+    "rich>=15.0.0",
+]
+
+[project.scripts]
+bosun = "bosun.cli:app"
+
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.17",
+]
