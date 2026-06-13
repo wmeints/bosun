@@ -53,6 +53,15 @@ with the right sized tasks for your agent. Make sure you also have configured
 your project correctly with a suitable validation suite, otherwise this fails
 badly.
 
+## Stall detection
+
+The agent edits the input file on every iteration as it checks off completed
+tasks. If the file's contents stay identical (same md5 hash) for **3
+iterations in a row**, Bosun assumes the agent is stuck and no longer making
+progress. When this happens the implementation job is considered failed: Bosun
+reports the error and exits with a non-zero status code instead of burning
+through the remaining iterations.
+
 ## Configuration
 
 The application can be configured with these extra command-line arguments:
