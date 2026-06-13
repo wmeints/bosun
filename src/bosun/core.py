@@ -65,10 +65,12 @@ class ImplementationJob:
     def run(self):
         """Run the implementation job until completion or stall.
 
-        The agent is invoked once per iteration, up to ``max_iterations``
-        times. After each iteration the task file is hashed; if it stays
-        unchanged for ``_MAX_STALLED_ITERATIONS`` consecutive iterations the
-        job is aborted.
+        Before each iteration the task file is inspected; once every checkbox
+        item is checked off the job stops early, since there is no remaining
+        work for the agent. Otherwise the agent is invoked, up to
+        ``max_iterations`` times. After each iteration the task file is hashed;
+        if it stays unchanged for ``_MAX_STALLED_ITERATIONS`` consecutive
+        iterations the job is aborted.
 
         Raises
         ------
@@ -81,6 +83,14 @@ class ImplementationJob:
         stalled_iterations = 0
 
         while self.current_iteration < self.max_iterations:
+            if self._all_tasks_completed():
+                logger.info(
+                    "All tasks in '%s' are complete; stopping after %d iteration(s).",
+                    self.task_file,
+                    self.current_iteration,
+                )
+                return
+
             self._run_agent()
             self.current_iteration += 1
 
@@ -122,6 +132,36 @@ class ImplementationJob:
             return None
 
         return hashlib.md5(contents).hexdigest()
+
+    def _all_tasks_completed(self) -> bool:
+        """Report whether every checkbox item in the task file is checked.
+
+        The task file uses Markdown checkboxes: ``- [ ]`` for an open item and
+        ``- [x]`` for a completed one. The job is considered done when at least
+        one item exists and none of them are still open.
+
+        Returns
+        -------
+        bool
+            ``True`` if the file contains one or more checkbox items and none
+            of them are unchecked. ``False`` if any item is still open, the
+            file has no checkbox items at all, or the file cannot be read.
+        """
+        try:
+            contents = Path(self.task_file).read_text()
+        except OSError:
+            return False
+
+        has_task = False
+
+        for line in contents.splitlines():
+            stripped = line.strip()
+            if stripped.startswith("- [ ]"):
+                return False
+            if stripped.startswith(("- [x]", "- [X]")):
+                has_task = True
+
+        return has_task
 
     def _run_agent(self):
         """Run the pi agent once and render its output to the terminal.
