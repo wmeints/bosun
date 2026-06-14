@@ -1,4 +1,4 @@
-"""Command-line interface for bosun, built on Typer."""
+"""Command-line interface the application."""
 
 import logging
 from typing import Annotated
@@ -13,7 +13,9 @@ app = Typer()
 
 @app.callback()
 def main(
-    verbose: Annotated[bool, Option("--verbose", "-v", help="Enable debug logging")] = False,
+    verbose: Annotated[
+        bool, Option("--verbose", "-v", help="Enable debug logging")
+    ] = False,
 ):
     """Configure logging for the CLI.
 

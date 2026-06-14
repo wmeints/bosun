@@ -1,3 +1,5 @@
+"""Helper module for logging configuration."""
+
 import logging
 
 from rich.logging import RichHandler

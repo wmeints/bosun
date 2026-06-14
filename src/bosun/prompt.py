@@ -1,3 +1,5 @@
+"""Helper module for working with prompts."""
+
 from pathlib import Path
 
 from jinja2 import Template
