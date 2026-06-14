@@ -12,7 +12,7 @@ between your plan and the code.
 
 ## Getting started
 
-Download the sources, and run `uv pip install -e .` to install the package on
+Download the sources, and run `uv install .` to install the package on
 your machine. Then, run `bosun implement <spec-file>` to implement a
 specification in your project.
 
